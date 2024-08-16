@@ -1,4 +1,57 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+input, button, textarea, select {
+    font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}
+
+#root, #__next {
+    isolation: isolate;
+}
+
 body {
+    -webkit-font-smoothing: antialiased;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 50px;
+}
+
+.board-container {
+    display: grid;
+    grid-template-columns: repeat(3, 120px);
+    grid-template-rows: repeat(3, 120px);
+    gap: 4px;
+    background-color: rgb(255, 255, 255);
+}
+
+.board-container .cell {
+    border: none;
     background-color: black;
     color: white;
+    display: grid;
+    place-items: center;
+    font-size: 72px;
 }
