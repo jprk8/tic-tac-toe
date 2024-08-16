@@ -38,7 +38,6 @@ const Gameboard = (function() {
 
     const printBoard = () => {
         if (!gameOver) {
-            console.log(`${active.name}'s TURN (${active.shape})`);
             const status = document.querySelector('.game-status');
             status.textContent = `${active.name}'s TURN (${active.shape})`;
         }
@@ -79,7 +78,6 @@ const Gameboard = (function() {
 
         // return false if game over
         if (checkWin(active)) {
-            console.log(`${active.name} (${active.shape}) WINS!`);
             const status = document.querySelector('.game-status');
             status.textContent = `${active.name} (${active.shape}) WINS!`;
             gameOver = true;
@@ -88,7 +86,6 @@ const Gameboard = (function() {
         }
         // check if gameboard is full
         if (cellCount == 0) {
-            console.log('Game Over');
             const status = document.querySelector('.game-status');
             status.textContent = 'GAME OVER - DRAW!'
             gameOver = true;
@@ -142,6 +139,10 @@ Player.prototype.setShape = function(shape) {
     this.shape = shape;
 }
 
+Player.prototype.setName = function(name) {
+    this.name = name;
+}
+
 // use tictactoe module to start the game
 const tictactoe = function() {
     const p1 = new Player('Player 1');
@@ -149,12 +150,33 @@ const tictactoe = function() {
     p1.setShape('O');
     p2.setShape('X');
 
-    console.log(p1);
-    console.log(p2);
+    const p1DisplayName = document.querySelector('.p1-name');
+    p1DisplayName.textContent = p1.name;
+    const p2DisplayName = document.querySelector('.p2-name');
+    p2DisplayName.textContent = p2.name;
+
+    const p1Btn = document.querySelector('.p1-change-btn');
+    const p2Btn = document.querySelector('.p2-change-btn');
+
+    p1Btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        const p1Name = document.getElementById('p1-new-name');
+        p1.setName(p1Name.value);
+        p1DisplayName.textContent = p1Name.value;
+        Gameboard.printBoard();
+    });
+
+    p2Btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        const p2Name = document.getElementById('p2-new-name');
+        p2.setName(p2Name.value);
+        p2DisplayName.textContent = p2Name.value;
+        Gameboard.printBoard();
+    });
 
     const resetBtn = document.querySelector('.reset-btn');
     resetBtn.addEventListener('click', () => {
-        Gameboard.init(p1, p2);
+        tictactoe();
     })
 
     Gameboard.init(p1, p2);

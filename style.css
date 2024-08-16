@@ -56,7 +56,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 32px;
+    gap: 30px;
 }
 
 .title {
@@ -72,6 +72,7 @@ body {
     width: 100px;
     height: 40px;
     cursor: pointer;
+    margin-top: 50px;
 }
 
 .info {
@@ -90,11 +91,7 @@ body {
 
 .game-status {
     grid-column: 1 / 3;
-    margin-top: 30px;
-}
-
-.main {
-    margin-bottom: 40px;
+    margin-top: 50px;
 }
 
 .board-container {
@@ -117,4 +114,9 @@ body {
 
 .cell:hover {
     background-color: #333;
+}
+
+input[type='text'] {
+    width: 150px;
+    padding: 2px 4px;
 }
