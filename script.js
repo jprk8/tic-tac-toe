@@ -147,8 +147,8 @@ Player.prototype.setName = function(name) {
 const tictactoe = function() {
     const p1 = new Player('Player 1');
     const p2 = new Player('Player 2');
-    p1.setShape('O');
-    p2.setShape('X');
+    p1.setShape('X');
+    p2.setShape('O');
 
     const p1DisplayName = document.querySelector('.p1-name');
     p1DisplayName.textContent = p1.name;
