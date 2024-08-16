@@ -4,11 +4,13 @@ const Gameboard = (function() {
     const board = [];
     // gameboard is full when cellCount reaches 0
     let cellCount = 9;
-    let gameover = false;
+    let gameOver = false;
     // set active player as private variable of gameboard
     let player1, player2, active;
     // initialize content of array / use it to reset board
     const init = (p1, p2) => {
+        cellCount = 9;
+        gameOver = false;
         for (let i = 0; i < 3; i++) {
             board[i] = [];
             for (let j = 0; j < 3; j++) {
@@ -18,6 +20,7 @@ const Gameboard = (function() {
         player1 = p1;
         player2 = p2;
         active = player1;
+        printBoard();
     }
 
     const switchTurn = () => {
@@ -29,17 +32,20 @@ const Gameboard = (function() {
     }
 
     // print (refresh) screen with the current content of the board
-    // use it to initialize game
-    // make buttons that return their positions
-    // pass in the position to another function to mark the cell
+    // use it to start game
+    // buttons will mark itself with the active player's shape
+    // then switch turns for next player
 
-    // try separating printBoard and playTurn
     const printBoard = () => {
-        console.table(board);
-        // remove current grid
-        const body = document.querySelector('body');
+        if (!gameOver) {
+            console.log(`${active.name}'s TURN (${active.shape})`);
+            const status = document.querySelector('.game-status');
+            status.textContent = `${active.name}'s TURN (${active.shape})`;
+        }
+        // remove current grid to refresh
+        const main = document.querySelector('.main');
         const currentContainer = document.querySelector('.board-container');
-        body.removeChild(currentContainer);
+        main.removeChild(currentContainer);
         const newContainer = document.createElement('div');
         newContainer.classList.add('board-container');
         for (let i = 0; i < 3; i++) {
@@ -48,7 +54,7 @@ const Gameboard = (function() {
                 cellBtn.classList.add('cell');
                 cellBtn.textContent = board[i][j];
                 cellBtn.addEventListener('click', () => {
-                    if (!gameover) {
+                    if (!gameOver) {
                         if (markCell(i, j, active.shape)) {
                             switchTurn();
                             printBoard();
@@ -58,7 +64,7 @@ const Gameboard = (function() {
                 newContainer.appendChild(cellBtn);
             }
         }
-        body.appendChild(newContainer);
+        main.appendChild(newContainer);
     }
 
     // markCell function sets gameover to true
@@ -73,15 +79,19 @@ const Gameboard = (function() {
 
         // return false if game over
         if (checkWin(active)) {
-            console.log(`${active.name} is the winner!`);
-            gameover = true;
+            console.log(`${active.name} (${active.shape}) WINS!`);
+            const status = document.querySelector('.game-status');
+            status.textContent = `${active.name} (${active.shape}) WINS!`;
+            gameOver = true;
             printBoard();
             return false;
         }
         // check if gameboard is full
         if (cellCount == 0) {
             console.log('Game Over');
-            gameover = true;
+            const status = document.querySelector('.game-status');
+            status.textContent = 'GAME OVER - DRAW!'
+            gameOver = true;
             printBoard();
             return false;
         }
@@ -133,19 +143,22 @@ Player.prototype.setShape = function(shape) {
 }
 
 // use tictactoe module to start the game
-const tictactoe = (function() {
-    const p1 = new Player('Player1');
-    const p2 = new Player('Player2');
+const tictactoe = function() {
+    const p1 = new Player('Player 1');
+    const p2 = new Player('Player 2');
     p1.setShape('O');
     p2.setShape('X');
 
     console.log(p1);
     console.log(p2);
 
+    const resetBtn = document.querySelector('.reset-btn');
+    resetBtn.addEventListener('click', () => {
+        Gameboard.init(p1, p2);
+    })
+
     Gameboard.init(p1, p2);
-    Gameboard.printBoard();
 
+}
 
-})();
-
-tictactoe;
+tictactoe();
