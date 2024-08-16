@@ -2,23 +2,39 @@
 const Gameboard = (function() {
     // tic-tac-toe: make 3x3 matrix
     const board = [];
+    // gameboard is full when cellCount reaches 0
+    let cellCount = 9;
+    let gameover = false;
+    // set active player as private variable of gameboard
+    let player1, player2, active;
     // initialize content of array / use it to reset board
-    const init = () => {
+    const init = (p1, p2) => {
         for (let i = 0; i < 3; i++) {
             board[i] = [];
             for (let j = 0; j < 3; j++) {
                 board[i].push('');
             }
         }
+        player1 = p1;
+        player2 = p2;
+        active = player1;
     }
 
-    // gameboard is full when cellCount reaches 0
-    let cellCount = 9;
+    const switchTurn = () => {
+        if (active == player1) {
+            active = player2;
+        } else {
+            active = player1;
+        }
+    }
 
     // print (refresh) screen with the current content of the board
-    // make buttons with event listener for the active player
     // use it to initialize game
-    const printBoard = (Player) => {
+    // make buttons that return their positions
+    // pass in the position to another function to mark the cell
+
+    // try separating printBoard and playTurn
+    const printBoard = () => {
         console.table(board);
         // remove current grid
         const body = document.querySelector('body');
@@ -32,7 +48,12 @@ const Gameboard = (function() {
                 cellBtn.classList.add('cell');
                 cellBtn.textContent = board[i][j];
                 cellBtn.addEventListener('click', () => {
-                    playTurn(i, j, Player);
+                    if (!gameover) {
+                        if (markCell(i, j, active.shape)) {
+                            switchTurn();
+                            printBoard();
+                        }
+                    }
                 });
                 newContainer.appendChild(cellBtn);
             }
@@ -40,32 +61,32 @@ const Gameboard = (function() {
         body.appendChild(newContainer);
     }
 
-    const playTurn = (row, column, Player) => {
+    // markCell function sets gameover to true
+    const markCell = (row, column, shape) => {
         // return false if a cell is already occupied
-        const mark = Player.shape;
         if (board[row][column] === '') {
-            board[row][column] = mark;
+            board[row][column] = shape;
             cellCount--;
         } else {
             return false;
         }
 
-        printBoard(Player);
-
-        // check for Game Over
-        // check if there is a winner
-        if (checkWin(Player)) {
-            console.log(`${Player.name} is the winner!`);
-        } else {
-            console.log('no winner');
+        // return false if game over
+        if (checkWin(active)) {
+            console.log(`${active.name} is the winner!`);
+            gameover = true;
+            printBoard();
+            return false;
         }
-
         // check if gameboard is full
         if (cellCount == 0) {
             console.log('Game Over');
+            gameover = true;
+            printBoard();
+            return false;
         }
-
-    };
+        return true;
+    }
 
     const getBoard = () => board;
     const getCellCount = () => cellCount;
@@ -96,10 +117,10 @@ const Gameboard = (function() {
     return {
         init,
         getBoard,
-        playTurn,
         printBoard,
         checkWin,
         getCellCount,
+        markCell,
     }
 })();
 
@@ -111,20 +132,20 @@ Player.prototype.setShape = function(shape) {
     this.shape = shape;
 }
 
-function Cell() {
+// use tictactoe module to start the game
+const tictactoe = (function() {
+    const p1 = new Player('Player1');
+    const p2 = new Player('Player2');
+    p1.setShape('O');
+    p2.setShape('X');
 
-}
+    console.log(p1);
+    console.log(p2);
 
-const displayController = (function() {
+    Gameboard.init(p1, p2);
+    Gameboard.printBoard();
+
 
 })();
 
-const p1 = new Player('Player1');
-const p2 = new Player('Player2');
-p1.setShape('O');
-p2.setShape('X');
-
-console.log(p1);
-console.log(p2);
-Gameboard.init();
-Gameboard.printBoard(p1);
+tictactoe;
